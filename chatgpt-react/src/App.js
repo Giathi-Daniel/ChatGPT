@@ -4,7 +4,7 @@ import { Resizable } from "react-resizable";
 import { FaCog, FaEllipsisV, FaUserCircle } from "react-icons/fa";
 import Modal from "react-modal";
 
-Modal.setAppElement("#root"); // For accessibility reasons
+Modal.setAppElement("#root");
 
 function App() {
   const [input, setInput] = useState("");
@@ -25,7 +25,6 @@ function App() {
     }
   }, [isDarkMode]);
 
-  // Fetch OpenAI response
   const fetchResponse = async (userMessage, chatId) => {
     const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
     const url = "https://api.openai.com/v1/completions";
