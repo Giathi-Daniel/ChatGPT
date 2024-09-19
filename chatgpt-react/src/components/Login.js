@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { ColorRing } from 'react-loader-spinner';
 import { auth } from '../firebase/config';
@@ -10,40 +10,74 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [emailLoading, setEmailLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
+  const [loadingEmailLogin, setLoadingEmailLogin] = useState(false);
+  const [loadingGoogleLogin, setLoadingGoogleLogin] = useState(false);
   const [recaptchaVerified, setRecaptchaVerified] = useState(false);
+  const [isLockedOut, setIsLockedOut] = useState(false);
+  const isMounted = useRef(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const lockoutEnd = localStorage.getItem('lockoutEnd');
+    if (lockoutEnd && new Date().getTime() < parseInt(lockoutEnd)) {
+      setIsLockedOut(true);
+    } else {
+      localStorage.removeItem('lockoutEnd');
+      setIsLockedOut(false);
+    }
+    
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
+
+    if (isLockedOut) {
+      setError('Your account is locked. Please try again later.');
+      return;
+    }
 
     if (!recaptchaVerified) {
       setError('Please verify the reCAPTCHA.');
       return;
     }
 
-    setEmailLoading(true);
+    setLoadingEmailLogin(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/profile');
+      if (isMounted.current) navigate('/profile');
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
+      const failedAttempts = parseInt(localStorage.getItem('failedAttempts') || '0') + 1;
+      localStorage.setItem('failedAttempts', failedAttempts);
+      if (failedAttempts >= 3) {
+        localStorage.setItem('lockoutEnd', new Date().getTime() + 3 * 60 * 60 * 1000); // 3 hours
+        setIsLockedOut(true);
+        localStorage.removeItem('failedAttempts');
+      }
     } finally {
-      setEmailLoading(false);
+      if (isMounted.current) setLoadingEmailLogin(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setGoogleLoading(true);
+    if (isLockedOut) {
+      setError('Your account is locked. Please try again later.');
+      return;
+    }
+
+    setLoadingGoogleLogin(true);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      navigate('/profile');
+      if (isMounted.current) navigate('/profile');
     } catch (err) {
-      setError('Google login failed. Please try again.');
-    } finally {
-      setGoogleLoading(false);
+      if (isMounted.current) {
+        setError('Google login failed. Please try again.');
+        setLoadingGoogleLogin(false);
+      }
     }
   };
 
@@ -99,9 +133,9 @@ const Login = () => {
         <button
           type="submit"
           className="w-full py-3 font-semibold text-white transition duration-150 ease-in-out bg-blue-500 rounded hover:bg-blue-600"
-          disabled={emailLoading}
+          disabled={loadingEmailLogin || isLockedOut}
         >
-          {emailLoading ? (
+          {loadingEmailLogin ? (
             <ColorRing
               visible={true}
               height="30"
@@ -119,9 +153,9 @@ const Login = () => {
           type="button"
           onClick={handleGoogleLogin}
           className="w-full py-3 font-semibold text-white transition duration-150 ease-in bg-red-500 rounded hover:bg-red-600"
-          disabled={googleLoading}
+          disabled={loadingGoogleLogin || isLockedOut}
         >
-          {googleLoading ? (
+          {loadingGoogleLogin ? (
             <ColorRing
               visible={true}
               height="30"
@@ -135,12 +169,12 @@ const Login = () => {
             'Login with Google'
           )}
         </button>
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center ">
           <p>
-            Forgot password? <a href="/reset-password" className="font-semibold text-blue-500">Reset here</a>
+            Forgot password? <Link to="/reset-password" className="text-blue-500 hover:underline">Reset Here</Link>
           </p>
           <p className="mt-4">
-            Don’t have an account? <a href="/signup" className="font-semibold text-blue-500">Sign Up</a>
+            Don’t have an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link>
           </p>
         </div>
       </form>

@@ -5,6 +5,7 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import ResetPassword from './components/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
+import Lockout from './components/Lockout';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/lockout" element={<Lockout />} />
         <Route path="/profile" element={<ProtectedRoute component={Profile} />} />
       </Routes>
     </Router>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth, provider } from '../firebase/config';
 import { signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { ColorRing } from 'react-loader-spinner'; 
@@ -145,7 +145,7 @@ const Signup = () => {
 
         <p className="mt-6 text-center text-gray-700">
           Already have an account?{' '}
-          <a href="/login" className="text-blue-500 hover:underline">Log in here</a>.
+          <Link to="/login" className="text-blue-500 hover:underline">Log in here</Link>
         </p>
       </div>
     </div>
