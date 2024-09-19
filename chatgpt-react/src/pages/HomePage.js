@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import ChatBox from "./ChatBox";
-import FreeChatCounter from "./FreeChatCounter";
-import LoginModal from "./LoginModal";
+import ChatBox from "../components/ChatBox";
+import FreeChatCounter from "../components/FreeChatCounter";
+import LoginModal from "../components/LoginModal";
 
 const Home = () => {
   const { currentUser } = useAuth();

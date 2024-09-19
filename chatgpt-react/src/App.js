@@ -125,14 +125,14 @@ function App() {
     <div className={`min-h-screen ${isDarkMode ? "dark bg-gray-900 text-white" : "bg-white text-black"} flex`}>
       {/* Sidebar */}
       <Resizable width={sidebarWidth} height={Infinity} onResize={(e, { size }) => setSidebarWidth(size.width)}>
-        <div style={{ inlineSize: sidebarWidth }} className="h-screen bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
-          <h2 className="text-xl font-bold mb-4">Chat History</h2>
+        <div style={{ inlineSize: sidebarWidth }} className="h-screen p-4 overflow-y-auto bg-gray-100 dark:bg-gray-800">
+          <h2 className="mb-4 text-xl font-bold">Chat History</h2>
 
           {/* Display chat history */}
           {Object.keys(chatHistory).length > 0 ? (
             Object.keys(chatHistory).map((chatId) => (
               <div key={chatId} className="mb-4">
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <div className="font-semibold cursor-pointer" onClick={() => handleChatClick(chatId)}>
                     {chatHistory[chatId].title || "Untitled Chat"} - {getChatTime(chatId)}
                   </div>
@@ -160,24 +160,24 @@ function App() {
 
           {/* Settings Icon */}
           <div className="absolute bottom-4 left-4">
-            <FaCog className="cursor-pointer text-2xl" onClick={() => setIsSettingsOpen(true)} />
+            <FaCog className="text-2xl cursor-pointer" onClick={() => setIsSettingsOpen(true)} />
           </div>
         </div>
       </Resizable>
 
       {/* Main Chat Section */}
-      <div className="flex-1 flex flex-col">
-        <div className="flex justify-between p-4">
-          <button
+       <div className="flex flex-col flex-1">
+         <div className="flex justify-between p-4">
+           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="bg-gray-200 dark:bg-gray-700 p-2 rounded-md"
+            className="p-2 bg-gray-200 rounded-md dark:bg-gray-700"
           >
             {isDarkMode ? "Light Mode" : "Dark Mode"}
           </button>
 
           {/* Profile Icon */}
           <FaUserCircle
-            className="cursor-pointer text-2xl"
+            className="text-2xl cursor-pointer"
             onClick={() => setIsProfileOpen(true)}
           />
         </div>
@@ -201,17 +201,17 @@ function App() {
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="flex p-4">
-          <input
+         <form onSubmit={handleSubmit} className="flex p-4">
+           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-grow p-2 rounded-l-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-700"
+            className="flex-grow p-2 border border-gray-300 rounded-l-lg dark:border-gray-700 dark:bg-gray-700"
             placeholder="Ask anything..."
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded-r-lg"
+            className="p-2 text-white bg-blue-500 rounded-r-lg"
           >
             Send
           </button>
