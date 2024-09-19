@@ -125,7 +125,7 @@ function App() {
     <div className={`min-h-screen ${isDarkMode ? "dark bg-gray-900 text-white" : "bg-white text-black"} flex`}>
       {/* Sidebar */}
       <Resizable width={sidebarWidth} height={Infinity} onResize={(e, { size }) => setSidebarWidth(size.width)}>
-        <div style={{ width: sidebarWidth }} className="h-screen bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
+        <div style={{ inlineSize: sidebarWidth }} className="h-screen bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
           <h2 className="text-xl font-bold mb-4">Chat History</h2>
 
           {/* Display chat history */}
