@@ -4,3 +4,5 @@
 	- Authentication with firebase
 	- Dark/Light toggle
 	- Responsive
+
+*If you like it star it*
