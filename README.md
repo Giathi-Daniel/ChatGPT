@@ -5,4 +5,6 @@
 	- Dark/Light toggle
 	- Responsive
 
+![design](./design.png)
+
 *If you like it star it*
