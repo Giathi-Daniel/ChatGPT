@@ -68,7 +68,7 @@ const Login = () => {
       console.log("reCAPTCHA Token:", token);
 
       await signInWithEmailAndPassword(auth, email, password);
-      if (isMounted.current) navigate('/profile');
+      if (isMounted.current) navigate('/chatgpt');
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
       const failedAttempts = parseInt(localStorage.getItem('failedAttempts') || '0') + 1;
@@ -93,7 +93,7 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      if (isMounted.current) navigate('/profile');
+      if (isMounted.current) navigate('/chatgpt');
     } catch (err) {
       if (isMounted.current) {
         setError('Google login failed. Please try again.');

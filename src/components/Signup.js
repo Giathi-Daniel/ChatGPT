@@ -33,7 +33,7 @@ const Signup = () => {
       await createUserWithEmailAndPassword(auth, email, password);
       setMessage('Account created successfully.');
       setTimeout(() => setMessage(''), 3000);
-      navigate('/profile');
+      navigate('/chatgpt');
     } catch (error) {
       setError('Signup error. Please try again.');
       setTimeout(() => setError(''), 3000);
@@ -46,7 +46,7 @@ const Signup = () => {
     setLoading(true);
     try {
       await signInWithPopup(auth, provider);
-      navigate('/profile');
+      navigate('/chatgpt');
     } catch (error) {
       setError('Google Signup Error. Please try again.');
       setTimeout(() => setError(''), 3000);

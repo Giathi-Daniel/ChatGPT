@@ -9,12 +9,13 @@ import Lockout from './components/Lockout';
 import HomePage from './pages/Home';
 import AboutPage from './pages/About';
 import ContactUs from './pages/ContactUs';
+import App1 from './App1';
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/login" element={<Login />} />
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/lockout" element={<Lockout />} />
         <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
+        <Route path="/chatgpt" element={<ProtectedRoute element={<App1 />} />} />  {/* Add the ChatGPT page */}
       </Routes>
     </Router>
   );
