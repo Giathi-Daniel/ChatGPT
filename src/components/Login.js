@@ -32,6 +32,7 @@ const Login = () => {
   }, []);
 
   const handleRecaptchaToken = async () => {
+    console.log('Site Key:', process.env.REACT_APP_SITE_KEY); 
     return new Promise((resolve, reject) => {
       window.grecaptcha.enterprise.ready(async () => {
         try {
@@ -46,6 +47,7 @@ const Login = () => {
       });
     });
   };
+  
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -144,7 +146,7 @@ const Login = () => {
         </div>
         <div className="mb-4">
           <ReCAPTCHA
-            sitekey: process.env.REACT_APP_SITE_KEY,
+            sitekey={process.env.REACT_APP_SITE_KEY}
             onChange={handleRecaptcha}
           />
         </div>
