@@ -32,12 +32,11 @@ const Login = () => {
   }, []);
 
   const handleRecaptchaToken = async () => {
-    console.log('Site Key:', process.env.REACT_APP_SITE_KEY); 
     return new Promise((resolve, reject) => {
       window.grecaptcha.enterprise.ready(async () => {
         try {
           const token = await window.grecaptcha.enterprise.execute(
-            process.env.REACT_APP_SITE_KEY,
+            process.env.REACT_APP_SITE_KEY, 
             { action: 'LOGIN' }
           );
           resolve(token); 
@@ -47,27 +46,38 @@ const Login = () => {
       });
     });
   };
-  
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
+  
     if (isLockedOut) {
       setError('Your account is locked. Please try again later.');
       return;
     }
-
+  
     if (!recaptchaVerified) {
       setError('Please verify the reCAPTCHA.');
       return;
     }
-
+  
     setLoadingEmailLogin(true);
     try {
       const token = await handleRecaptchaToken();
-      console.log("reCAPTCHA Token:", token);
 
-      await signInWithEmailAndPassword(auth, email, password);
+      const response = await fetch('http://localhost:5000/verify-recaptcha', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, recaptchaToken: token }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed. Please try again.');
+      }
+
       if (isMounted.current) navigate('/chatgpt');
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
@@ -82,7 +92,7 @@ const Login = () => {
       if (isMounted.current) setLoadingEmailLogin(false);
     }
   };
-
+  
   const handleGoogleLogin = async () => {
     if (isLockedOut) {
       setError('Your account is locked. Please try again later.');
@@ -103,7 +113,7 @@ const Login = () => {
   };
 
   const handleRecaptcha = (value) => {
-    setRecaptchaVerified(true);
+    setRecaptchaVerified(true); 
   };
 
   return (
@@ -146,7 +156,7 @@ const Login = () => {
         </div>
         <div className="mb-4">
           <ReCAPTCHA
-            sitekey={process.env.REACT_APP_SITE_KEY}
+            sitekey={process.env.REACT_APP_SITE_KEY} 
             onChange={handleRecaptcha}
           />
         </div>

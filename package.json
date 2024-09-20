@@ -9,8 +9,10 @@
     "@testing-library/user-event": "^13.5.0",
     "assert": "^2.1.0",
     "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "express": "^4.21.0",
     "firebase": "^10.13.2",
     "https-browserify": "^1.0.0",
     "process": "^0.11.10",
@@ -57,5 +59,10 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.12"
-  }
+  },
+  "description": "- The AI model is created in REACT\r - It include the following features: \r \t- Authentication with firebase\r \t- Dark/Light toggle\r \t- Responsive",
+  "main": "tailwind.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
