@@ -22,8 +22,8 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/lockout" element={<Lockout />} />
-        <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
-        <Route path="/chatgpt" element={<ProtectedRoute element={<App1 />} />} /> 
+        <Route path="/profile" element={<ProtectedRoute component={Profile} />} />
+        <Route path="/chatgpt" element={<ProtectedRoute component={App1} />} />
       </Routes>
     </Router>
   );

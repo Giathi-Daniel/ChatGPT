@@ -20,6 +20,8 @@ const ContactUs = () => {
     lng: -122.4194,
   };
 
+  const isLink = ""
+
   return (
     <div>
       <Header />
@@ -84,8 +86,8 @@ const ContactUs = () => {
               <p className="text-gray-700">Address: 123 Example St, City, Country</p>
               <p className="text-gray-700">
                 Follow us: 
-                <a href="#" className="text-blue-500"> Facebook</a>, 
-                <a href="#" className="text-blue-500"> Twitter</a>
+                <a href={isLink ? "/valid-link" : "#"} className="text-blue-500"> Facebook</a>, 
+                <a href={isLink ? "/valid-link" : "#"} className="text-blue-500"> Twitter</a>
               </p>
             </div>
           </div>
