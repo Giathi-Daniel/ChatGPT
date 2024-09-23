@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'
+import axios from 'axios';
 import Sidebar from "./components/chatgpt/Sidebar";
 import ChatWindow from "./components/chatgpt/ChatWindow";
 import ProfileModal from "./components/chatgpt/ProfileModal";
@@ -63,7 +63,6 @@ function App1() {
         { sender: "user", text: userMessage },
         { sender: "bot", text: botMessage },
       ]);
-      
       updateChatHistory(chatId, userMessage, botMessage);
     } catch (error) {
       console.error("Error fetching GPT response:", error);
@@ -72,7 +71,11 @@ function App1() {
 
   const updateChatHistory = (chatId, userMessage, botMessage) => {
     setChatHistory((prevHistory) => {
-      const updatedMessages = [...prevHistory[chatId]?.messages || [], { sender: "user", text: userMessage }, { sender: "bot", text: botMessage }];
+      const updatedMessages = [
+        ...prevHistory[chatId]?.messages || [],
+        { sender: "user", text: userMessage },
+        { sender: "bot", text: botMessage },
+      ];
       return {
         ...prevHistory,
         [chatId]: {
@@ -102,9 +105,21 @@ function App1() {
         getChatTime={() => {}}
         setIsSettingsOpen={setIsSettingsOpen}
       />
-      <ChatWindow messages={messages} input={input} setInput={setInput} handleSubmit={handleSubmit} />
-      <ProfileModal isProfileOpen={isProfileOpen} setIsProfileOpen={setIsProfileOpen} />
-      <SettingsModal isSettingsOpen={isSettingsOpen} setIsSettingsOpen={setIsSettingsOpen} handleDeleteAllChats={() => {}} />
+      <ChatWindow
+        messages={messages}
+        input={input}
+        setInput={setInput}
+        handleSubmit={handleSubmit}
+      />
+      <ProfileModal
+        isProfileOpen={isProfileOpen}
+        setIsProfileOpen={setIsProfileOpen}
+      />
+      <SettingsModal
+        isSettingsOpen={isSettingsOpen}
+        setIsSettingsOpen={setIsSettingsOpen}
+        handleDeleteAllChats={() => {}}
+      />
     </div>
   );
 }
