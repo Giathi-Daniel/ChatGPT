@@ -23,7 +23,7 @@ const App = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/lockout" element={<Lockout />} />
         <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
-        <Route path="/chatgpt" element={<ProtectedRoute element={<App1 />} />} />  {/* Add the ChatGPT page */}
+        <Route path="/chatgpt" element={<ProtectedRoute element={<App1 />} />} /> 
       </Routes>
     </Router>
   );
