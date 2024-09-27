@@ -16,3 +16,15 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
 }
+
+
+.scrollbar-thin::-webkit-scrollbar {
+    inline-size: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent; 
+  }
+  

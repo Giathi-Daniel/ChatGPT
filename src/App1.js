@@ -1,28 +1,47 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import Modal from "react-modal";
+import axios from "axios";
 import Sidebar from "./components/chatgpt/Sidebar";
 import ChatWindow from "./components/chatgpt/ChatWindow";
 import ProfileModal from "./components/chatgpt/ProfileModal";
 import SettingsModal from "./components/chatgpt/SettingsModal";
+import { getAuth } from "firebase/auth";
 
 function App1() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [chatHistory, setChatHistory] = useState({});
   const [currentChatId, setCurrentChatId] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isChatOptionsOpen, setIsChatOptionsOpen] = useState(null);
   const [sidebarWidth, setSidebarWidth] = useState(300);
+  const [user, setUser] = useState(null);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(true); 
+
+  const templatePrompts = [
+    "What is the weather today?",
+    "Tell me a joke.",
+    "Surprise me",
+    "Create image"
+  ];
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    Modal.setAppElement("#root");
+  }, []);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (currentUser) {
+      setUser({
+        name: currentUser.displayName || "Anonymous",
+        email: currentUser.email,
+        avatar: currentUser.photoURL || "https://example.com/default-avatar.png",
+      });
     }
-  }, [isDarkMode]);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,54 +53,43 @@ function App1() {
       }
       fetchResponse(input.trim(), chatId);
       setInput("");
+      setShowWelcomeMessage(false);
     }
   };
 
   const fetchResponse = async (userMessage, chatId) => {
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
-    const url = "https://api.openai.com/v1/completions";
+    const url = "https://gemmie.onrender.com/api/prompt"; 
 
     try {
       const response = await axios.post(
         url,
-        {
-          model: "text-davinci-003",
-          prompt: userMessage,
-          max_tokens: 150,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
+        { prompt: userMessage },
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      const botMessage = response.data.choices[0].text.trim();
+      const botMessage = response.data.text.replace(/<[^>]+>/g, "").trim();
       setMessages((prevMessages) => [
-        ...prevMessages,
         { sender: "user", text: userMessage },
         { sender: "bot", text: botMessage },
+        ...prevMessages,
       ]);
+
       updateChatHistory(chatId, userMessage, botMessage);
     } catch (error) {
-      console.error("Error fetching GPT response:", error);
+      console.error("Error fetching Gemini API response:", error);
     }
   };
 
   const updateChatHistory = (chatId, userMessage, botMessage) => {
     setChatHistory((prevHistory) => {
       const updatedMessages = [
-        ...prevHistory[chatId]?.messages || [],
         { sender: "user", text: userMessage },
         { sender: "bot", text: botMessage },
+        ...(prevHistory[chatId]?.messages || []),
       ];
       return {
         ...prevHistory,
-        [chatId]: {
-          ...prevHistory[chatId],
-          messages: updatedMessages,
-        },
+        [chatId]: { ...prevHistory[chatId], messages: updatedMessages },
       };
     });
   };
@@ -89,37 +97,66 @@ function App1() {
   const handleChatClick = (chatId) => {
     setCurrentChatId(chatId);
     setMessages(chatHistory[chatId].messages);
+    setShowWelcomeMessage(true);
+  };
+
+  const handleTemplateClick = (prompt) => {
+    setInput(prompt);
+    setShowWelcomeMessage(false);
+  };
+
+  const handleDeleteChat = (chatId) => {
+    const newChatHistory = { ...chatHistory };
+    delete newChatHistory[chatId];
+    setChatHistory(newChatHistory);
+    if (currentChatId === chatId) {
+      setCurrentChatId(null);
+      setMessages([]);
+      setShowWelcomeMessage(true);
+    }
+  };
+
+  // const handleOpenProfile = () => {
+  //   setIsProfileOpen(true);
+  // };
+
+  const handleCloseProfile = () => {
+    setIsProfileOpen(false);
+  };
+
+  // const handleOpenSettings = () => {
+  //   setIsSettingsOpen(true);
+  // };
+
+  const handleCloseSettings = () => {
+    setIsSettingsOpen(false);
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? "dark bg-gray-900 text-white" : "bg-white text-black"} flex`}>
+    <div className="min-h-screen bg-[rgb(33,33,33)] text-white flex">
       <Sidebar
         chatHistory={chatHistory}
         handleChatClick={handleChatClick}
         handleRenameChat={() => {}}
-        handleDeleteChat={() => {}}
+        handleDeleteChat={handleDeleteChat}
         isChatOptionsOpen={isChatOptionsOpen}
         setIsChatOptionsOpen={setIsChatOptionsOpen}
         sidebarWidth={sidebarWidth}
         setSidebarWidth={setSidebarWidth}
-        getChatTime={() => {}}
-        setIsSettingsOpen={setIsSettingsOpen}
       />
       <ChatWindow
         messages={messages}
         input={input}
         setInput={setInput}
         handleSubmit={handleSubmit}
+        user={user}
+        showWelcomeMessage={showWelcomeMessage} 
+        templatePrompts={templatePrompts} 
+        handleTemplateClick={handleTemplateClick} 
+        sidebarWidth={sidebarWidth}
       />
-      <ProfileModal
-        isProfileOpen={isProfileOpen}
-        setIsProfileOpen={setIsProfileOpen}
-      />
-      <SettingsModal
-        isSettingsOpen={isSettingsOpen}
-        setIsSettingsOpen={setIsSettingsOpen}
-        handleDeleteAllChats={() => {}}
-      />
+      {isProfileOpen && <ProfileModal user={user} onClose={handleCloseProfile} />}
+      {isSettingsOpen && <SettingsModal onClose={handleCloseSettings} />}
     </div>
   );
 }

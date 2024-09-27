@@ -11,7 +11,6 @@ const Sidebar = ({
   setIsChatOptionsOpen,
   sidebarWidth,
   setSidebarWidth,
-  getChatTime,
   setIsSettingsOpen,
   handleNewChat,
 }) => {
@@ -23,34 +22,32 @@ const Sidebar = ({
     >
       <div
         style={{ inlineSize: sidebarWidth }}
-        className="relative h-screen p-4 overflow-y-auto bg-gray-100 dark:bg-gray-800"
+        className="relative h-screen p-4 bg-[#000] shadow-md"
       >
-        {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Chat History</h2>
+          <h2 className="text-xl font-bold text-white">Chat History</h2>
           <FaPlus
-            className="text-xl cursor-pointer"
+            className="text-[#F0F0F0] text-xl cursor-pointer hover:text-gray-400 transition duration-300 ease-in-out"
             onClick={handleNewChat}
             title="Start New Chat"
+            aria-label="Start New Chat"
           />
         </div>
 
-        {/* Chat List */}
         {Object.keys(chatHistory).length > 0 ? (
           Object.keys(chatHistory)
-            .sort((a, b) => b - a) // Sort chats by newest first
+            .sort((a, b) => new Date(chatHistory[b].timestamp) - new Date(chatHistory[a].timestamp)) // Assuming you have a timestamp field
             .map((chatId) => (
               <div key={chatId} className="mb-4">
                 <div className="flex items-center justify-between">
                   <div
-                    className="font-semibold cursor-pointer"
+                    className="font-semibold text-white cursor-pointer rounded-md p-2 hover:bg-[#1b1818] transition duration-300 ease-in-out"
                     onClick={() => handleChatClick(chatId)}
                   >
-                    {chatHistory[chatId].title || "Untitled Chat"} -{" "}
-                    {getChatTime(chatId)}
+                    {chatHistory[chatId].title || "Untitled Chat"}
                   </div>
                   <FaEllipsisV
-                    className="cursor-pointer"
+                    className="text-[#F0F0F0] cursor-pointer hover:font-bold transition duration-300 ease-in-out"
                     onClick={() =>
                       setIsChatOptionsOpen(
                         chatId === isChatOptionsOpen ? null : chatId
@@ -59,9 +56,9 @@ const Sidebar = ({
                   />
                 </div>
                 {isChatOptionsOpen === chatId && (
-                  <div className="mt-2">
+                  <div className="mt-2 bg-[#1b1818] p-2 rounded-md absolute z-10 right-0 shadow-lg">
                     <button
-                      className="block w-full text-left"
+                      className="block w-full text-left hover:bg-gray-500 rounded-md transition duration-300 ease-in-out py-1 px-2 text-[#F0F0F0]"
                       onClick={() =>
                         handleRenameChat(chatId, prompt("New title:"))
                       }
@@ -69,7 +66,7 @@ const Sidebar = ({
                       Rename
                     </button>
                     <button
-                      className="block w-full text-left"
+                      className="block w-full text-left hover:bg-gray-500 rounded-md transition duration-300 ease-in-out py-1 px-2 text-white"
                       onClick={() => handleDeleteChat(chatId)}
                     >
                       Delete
@@ -79,13 +76,14 @@ const Sidebar = ({
               </div>
             ))
         ) : (
-          <div>No chat history</div>
+          <div className="text-[#F0F0F0]">No chat history</div>
         )}
 
         <div className="absolute bottom-4 left-4">
           <FaCog
-            className="text-2xl cursor-pointer"
+            className="text-2xl cursor-pointer hover:text-blue-500"
             onClick={() => setIsSettingsOpen(true)}
+            aria-label="Open Settings"
           />
         </div>
       </div>
